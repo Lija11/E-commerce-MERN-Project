@@ -32,32 +32,28 @@ exports.createProduct = async (req, res, next) => {
 
 // getAllProducts
 
-exports.getAllProducts = async (req, res) => {
-  try {
-    const resultPerPage = 5;
-    const currentPage = Number(req.query.page || "1");
-    const skip = resultPerPage * (currentPage - 1);
-    const productCount = await Product.countDocuments();
-    let filter = {};
-    if (req.query.categories) {
-      filter = {
-        category: req.query.categories.split(","),
-      };
-    }
-
-    const products = await Product.find(filter)
-      .populate("category")
-      .limit(resultPerPage)
-      .skip(skip);
-    res.status(200).json({
-      success: true,
-      products,
-      productCount,
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
+exports.getAllProducts = catchAsyncErrors(async (req, res) => {
+  const resultPerPage = 5;
+  const currentPage = Number(req.query.page || "1");
+  const skip = resultPerPage * (currentPage - 1);
+  const productCount = await Product.countDocuments();
+  let filter = {};
+  if (req.query.categories) {
+    filter = {
+      category: req.query.categories.split(","),
+    };
   }
-};
+
+  const products = await Product.find(filter)
+    .populate("category")
+    .limit(resultPerPage)
+    .skip(skip);
+  res.status(200).json({
+    success: true,
+    products,
+    productCount,
+  });
+});
 
 exports.getOneProducts = async (req, res) => {
   try {
@@ -82,24 +78,20 @@ exports.getOneProducts = async (req, res) => {
 
 // getProductDetails
 
-exports.getProductDetails = async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      res.status(500).json({
-        success: true,
-        messages: "product not found",
-      });
-    }
-
-    res.status(200).json({
+exports.getProductDetails = catchAsyncErrors(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    res.status(500).json({
       success: true,
-      product,
+      messages: "product not found",
     });
-  } catch (error) {
-    res.status(500).send(error.message);
   }
-};
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
 
 // updateProduct
 
@@ -155,25 +147,21 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 
 // deleteProduct
 
-exports.deleteProduct = async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(500).json({
-        success: false,
-        message: "product not found",
-      });
-    }
-
-    await product.remove();
-    res.status(200).json({
-      success: true,
-      message: "product deleted successfully",
+exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return res.status(500).json({
+      success: false,
+      message: "product not found",
     });
-  } catch (error) {
-    res.status(500).send(error.message);
   }
-};
+
+  await product.remove();
+  res.status(200).json({
+    success: true,
+    message: "product deleted successfully",
+  });
+});
 
 // create product review and update review
 
