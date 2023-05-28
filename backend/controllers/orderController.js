@@ -1,6 +1,6 @@
 const Order = require("../models/orderModel");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const ErrorHandler = require("../utils/errorhander");
+const ErrorHandler = require("../utils/errorHandler");
 const Product = require("../models/productModel");
 
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
