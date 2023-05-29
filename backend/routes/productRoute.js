@@ -16,10 +16,10 @@ const router = require("express").Router();
 router.route("/products").get(getAllProducts);
 router.route("/products/:key").get(isAuthenticatedUser, getOneProducts);
 router
-  .route("/product/new")
+  .route("/admin/product/new")
   .post(isAuthenticatedUser, authorizeRoles("admin"), createProduct);
 router
-  .route("/product/:id")
+  .route("/admin/product/:id")
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateProduct)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 
